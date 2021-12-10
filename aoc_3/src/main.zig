@@ -29,7 +29,7 @@ pub fn main() anyerror!void {
 
     for (sensor_data) |char, index| {
         if (char == '\n') {
-            width = index - start;
+            width = index - start - 1;
             //std.debug.print("-> {s} w = {d}\n", .{ sensor_data[start..index], width });
             tmp = try std.fmt.parseInt(u64, std.mem.trimRight(u8, sensor_data[start..index], "\n"), 2);
             try list.append(tmp);
@@ -37,24 +37,34 @@ pub fn main() anyerror!void {
         }
     }
     //std.debug.print("-> {s}\n", .{sensor_data[start..]});
-    std.debug.print("-> {d}\n", .{list.items[0]});
+    std.debug.print("-> {d} 2^0 {d}\n", .{ list.items[0], @as(u64, 1) << @intCast(u6, 0) });
     tmp = try std.fmt.parseInt(u64, std.mem.trimRight(u8, sensor_data[start..], "\n"), 2);
     try list.append(tmp);
 
     var index: u64 = 0;
     var sensor_bit: u64 = 0;
+    var one_cnt: i64 = 0;
+    var zero_cnt: i64 = 0;
     while (index <= width) {
-        //for (list.items) |item| {
-        {
-            var item: u64 = list.items[0];
+        for (list.items) |item| {
+
             //std.debug.print("+> {d}\n", .{width - index});
-            sensor_bit = item & (@as(u64, 2) << @intCast(u6, (width - index)));
+            sensor_bit = item & (@as(u64, 1) << @intCast(u6, (width - index)));
             if (sensor_bit > 0) {
                 std.debug.print("=> {d}\n", .{1});
+                one_cnt = one_cnt + 1;
             } else {
                 std.debug.print("=> {d}\n", .{0});
+                zero_cnt = zero_cnt + 1;
             }
             //std.debug.print("=> {d:0>5}\n", .{item});
+        }
+        if (one_cnt == zero_cnt) {
+            std.debug.print("Equal number 1 and 0\n", .{});
+        } else if (one_cnt > zero_cnt) {
+            std.debug.print("Mostly ones\n", .{});
+        } else {
+            std.debug.print("Mostly zeros\n", .{});
         }
         index += 1;
     }
