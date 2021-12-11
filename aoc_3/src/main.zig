@@ -1,21 +1,22 @@
 const std = @import("std");
 const ArrayList = std.ArrayList;
 const pow = std.math.pow;
+const sensor_data = @embedFile("../day3.input");
 
-const sensor_data =
-    \\00100
-    \\11110
-    \\10110
-    \\10111
-    \\10101
-    \\01111
-    \\00111
-    \\11100
-    \\10000
-    \\11001
-    \\00010
-    \\01010
-;
+// const sensor_data =
+//     \\00100
+//     \\11110
+//     \\10110
+//     \\10111
+//     \\10101
+//     \\01111
+//     \\00111
+//     \\11100
+//     \\10000
+//     \\11001
+//     \\00010
+//     \\01010
+// ;
 
 //fn convertSensorData
 
@@ -28,6 +29,7 @@ pub fn main() anyerror!void {
     const allocator = &arena.allocator;
     var list = ArrayList(u64).init(allocator);
 
+    //std.debug.print("sensor_data=\n{s}\n", .{sensor_data});
     for (sensor_data) |char, index| {
         if (char == '\n') {
             width = index - start - 1;
@@ -54,10 +56,10 @@ pub fn main() anyerror!void {
             //std.debug.print("+> {d}\n", .{width - index});
             sensor_bit = item & (@as(u64, 1) << @intCast(u6, (width - index)));
             if (sensor_bit > 0) {
-                std.debug.print("=> {d}\n", .{1});
+                //std.debug.print("=> {d}\n", .{1});
                 one_cnt += 1;
             } else {
-                std.debug.print("=> {d}\n", .{0});
+                //std.debug.print("=> {d}\n", .{0});
                 one_cnt -= 1;
             }
             //std.debug.print("=> {d:0>5}\n", .{item});
