@@ -1,5 +1,6 @@
 const std = @import("std");
 const ArrayList = std.ArrayList;
+const pow = std.math.pow;
 
 const sensor_data =
     \\00100
@@ -44,7 +45,9 @@ pub fn main() anyerror!void {
     var index: u64 = 0;
     var sensor_bit: u64 = 0;
     var one_cnt: i64 = 0;
-    var zero_cnt: i64 = 0;
+    var gamma: u64 = 0;
+    var myepsilon: u64 = 0;
+    var mask: u64 = 0;
     while (index <= width) {
         for (list.items) |item| {
 
@@ -52,22 +55,25 @@ pub fn main() anyerror!void {
             sensor_bit = item & (@as(u64, 1) << @intCast(u6, (width - index)));
             if (sensor_bit > 0) {
                 std.debug.print("=> {d}\n", .{1});
-                one_cnt = one_cnt + 1;
+                one_cnt += 1;
             } else {
                 std.debug.print("=> {d}\n", .{0});
-                zero_cnt = zero_cnt + 1;
+                one_cnt -= 1;
             }
             //std.debug.print("=> {d:0>5}\n", .{item});
         }
-        if (one_cnt == zero_cnt) {
+        if (one_cnt == 0) {
             std.debug.print("Equal number 1 and 0\n", .{});
-        } else if (one_cnt > zero_cnt) {
+        } else if (one_cnt > 0) {
             std.debug.print("Mostly ones\n", .{});
+            gamma |= (@as(u64, 1) << @intCast(u6, (width - index)));
         } else {
             std.debug.print("Mostly zeros\n", .{});
+            gamma |= (@as(u64, 0) << @intCast(u6, (width - index)));
         }
         index += 1;
+        one_cnt = 0;
     }
-
-    //std.log.info("All your codebase are belong to us.", .{});
+    myepsilon = (~gamma) & (pow(u64, 2, width + 1) - 1);
+    std.debug.print("gamma is {b:0>5} epsilon={b:0>5} power={d}\n", .{ gamma, myepsilon, gamma * myepsilon });
 }
