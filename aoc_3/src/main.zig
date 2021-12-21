@@ -1,22 +1,22 @@
 const std = @import("std");
 const ArrayList = std.ArrayList;
 const pow = std.math.pow;
-const sensor_data = @embedFile("../day3.input");
+//const sensor_data = @embedFile("../day3.input");
 
-// const sensor_data =
-//     \\00100
-//     \\11110
-//     \\10110
-//     \\10111
-//     \\10101
-//     \\01111
-//     \\00111
-//     \\11100
-//     \\10000
-//     \\11001
-//     \\00010
-//     \\01010
-// ;
+const sensor_data =
+    \\00100
+    \\11110
+    \\10110
+    \\10111
+    \\10101
+    \\01111
+    \\00111
+    \\11100
+    \\10000
+    \\11001
+    \\00010
+    \\01010
+;
 
 //fn convertSensorData
 
@@ -26,7 +26,7 @@ pub fn main() anyerror!void {
     var tmp: u64 = 0;
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer arena.deinit();
-    const allocator = &arena.allocator;
+    const allocator = arena.allocator();
     var list = ArrayList(u64).init(allocator);
 
     //std.debug.print("sensor_data=\n{s}\n", .{sensor_data});
@@ -49,7 +49,6 @@ pub fn main() anyerror!void {
     var one_cnt: i64 = 0;
     var gamma: u64 = 0;
     var myepsilon: u64 = 0;
-    var mask: u64 = 0;
     while (index <= width) {
         for (list.items) |item| {
 

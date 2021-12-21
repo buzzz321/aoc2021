@@ -38,7 +38,7 @@ fn calcProgress(cmds: []const u8) [2]u64 {
 pub fn main() anyerror!void {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer arena.deinit();
-    const allocator = &arena.allocator;
+    const allocator = arena.allocator();
 
     const file = std.fs.cwd().openFile(
         "day2.input",
@@ -53,6 +53,7 @@ pub fn main() anyerror!void {
     std.log.info("-> {s}", .{stat});
     var cmd_buffer = try allocator.alloc(u8, stat.size);
     const bytes_read = try file.readAll(cmd_buffer);
+    std.debug.print("Just read {d}±n", .{bytes_read});
 
     const values = calcProgress(cmd_buffer);
     std.log.info("x={d} z={d} x*z={d}\n", .{ values[0], values[1], values[0] * values[1] });
